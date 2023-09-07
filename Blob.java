@@ -13,9 +13,9 @@ import java.util.Formatter;
 
 public class Blob { // fix the first method
 
-    public static String reader(String codeFile) throws IOException {
+    public static String reader(String TestFile) throws IOException {
         StringBuilder output = new StringBuilder();
-        BufferedReader breader = new BufferedReader(new FileReader(codeFile));
+        BufferedReader breader = new BufferedReader(new FileReader(TestFile));
         while (breader.ready()) {
             String s = breader.readLine();
             output.append(s);
@@ -24,13 +24,13 @@ public class Blob { // fix the first method
         return output.toString();
     }
 
-    public static String encryptPassword(String password) throws IOException {
-        //String passwordString = reader ("password");
+    public static String encryptPassword(String TestFile) throws IOException {
+        String passwordString = reader ("TestFile");
         String sha1 = "";
         try {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
             crypt.reset();
-            crypt.update(password.getBytes("UTF-8"));
+            crypt.update(passwordString.getBytes("UTF-8"));
             sha1 = byteToHex(crypt.digest());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
