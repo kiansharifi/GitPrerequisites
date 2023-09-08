@@ -35,7 +35,7 @@ public class Blob {
     }
 
     public String encryptPassword(String TestFile) throws IOException {
-        String passwordString = reader ("TestFile");
+        String passwordString = reader (TestFile);
         String sha1 = "";
         try {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
