@@ -19,6 +19,10 @@ import java.util.Formatter;
 public class Blob {
     private String sha1;
 
+    public Blob (String TestFile) throws IOException
+    {
+        writeToObjects (TestFile);
+    }
     public String reader(String TestFile) throws IOException {
         StringBuilder output = new StringBuilder();
         BufferedReader breader = new BufferedReader(new FileReader(TestFile));
@@ -70,7 +74,7 @@ public class Blob {
     
         // Create and write to the file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
-            bw.write(hash);
+            bw.write(reader(in));
         } catch (IOException e) {
             e.printStackTrace();
         }
