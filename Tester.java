@@ -7,5 +7,7 @@ public class Tester
         Blob blob = new Blob ();
         String name = "kiansharifi8";
         System.out.println (blob.encryptPassword("TestFile"));
+
+        blob.writeToObjects(name);
     }
 }

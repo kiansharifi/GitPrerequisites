@@ -1,19 +1,25 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 
-public class Blob { // fix the first method
+public class Blob {
+    private String sha1;
 
-    public static String reader(String TestFile) throws IOException {
+    public String reader(String TestFile) throws IOException {
         StringBuilder output = new StringBuilder();
         BufferedReader breader = new BufferedReader(new FileReader(TestFile));
         while (breader.ready()) {
@@ -24,7 +30,7 @@ public class Blob { // fix the first method
         return output.toString();
     }
 
-    public static String encryptPassword(String TestFile) throws IOException {
+    public String encryptPassword(String TestFile) throws IOException {
         String passwordString = reader ("TestFile");
         String sha1 = "";
         try {
@@ -40,7 +46,7 @@ public class Blob { // fix the first method
         return sha1;
     }
 
-    public static String byteToHex(final byte[] hash) {
+    public String byteToHex(final byte[] hash) {
         Formatter formatter = new Formatter();
         for (byte b : hash) {
             formatter.format("%02x", b);
@@ -50,17 +56,30 @@ public class Blob { // fix the first method
         return result;
     }
 
-    public void createFolder() {
-        File f = new File("/objects");
-        try {
-            if (f.mkdir()) {
-                System.out.println("Directory Created");
-            } else {
-                System.out.println("Directory is not created");
-            }
-        } catch (Exception e) {
+    public void writeToObjects(String in) throws IOException
+    {
+        String hash = encryptPassword(in);
+        sha1 = hash;
+        String directoryPath = "objects";
+        String fileName = hash;
+        String filePath = directoryPath + File.separator + fileName;
+    
+        // Ensure the directory exists
+        Path directoryPathing = Paths.get(directoryPath);
+        Files.createDirectories(directoryPathing);
+    
+        // Create and write to the file
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            bw.write(hash);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public String getSha1 ()
+    {
+        return sha1;
+    }
+    
 
 }
