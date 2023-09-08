@@ -15,7 +15,7 @@ public class Index {
         Files.createDirectories(Paths.get("objects/"));
     }
 
-    public String reader(String TestFile) throws IOException {
+    public static String reader(String TestFile) throws IOException {
         StringBuilder output = new StringBuilder();
         BufferedReader breader = new BufferedReader(new FileReader(TestFile));
         while (breader.ready()) {
@@ -32,7 +32,15 @@ public class Index {
         File f = new File(TestFile);
         File indexFile = new File("index");
         String name = f.getName();
+        if (reader ("index").contains (blob.getSha1 ()))
+        {
+            return;
+        }
         FileWriter writer = new FileWriter(indexFile, true);
+        if (!reader ("index").isEmpty ())
+        {
+            writer.write ("\n");
+        }
         writer.write(name + " : " + blob.getSha1());
         writer.close();
     }

@@ -6,6 +6,8 @@ public class Tester
     {
         Blob blob = new Blob ("TestFile");
         Index.initialize ();
+        Index.addBlob ("TestFile");
+        Index.addBlob ("TestFile2");
     }
 
 }
