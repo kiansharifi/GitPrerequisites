@@ -33,7 +33,7 @@ public class UnitTester {
     void testInitialize() throws Exception {
 
         // Run the person's code
-        // TestHelper.runTestSuiteMethods("testInitialize");
+        Index.initialize();
 
         // check if the file exists
         File file = new File("index");
@@ -46,26 +46,31 @@ public class UnitTester {
     @Test
     @DisplayName("[15] Test if adding a blob works.  5 for sha, 5 for file contents, 5 for correct location")
     void testCreateBlob() throws Exception {
-
+        String sha1 = "";
         try {
 
             // Manually create the files and folders before the 'testAddFile'
             // MyGitProject myGitClassInstance = new MyGitProject();
             // myGitClassInstance.init();
+            Index.initialize();
 
             // TestHelper.runTestSuiteMethods("testCreateBlob", file1.getName());
-
+            Index.addBlob("junit_example_file_data.txt");
+            Blob blob = new Blob("junit_example_file_data.txt");
+            sha1 = blob.getSha1();
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
 
         // Check blob exists in the objects folder
-        File file_junit1 = new File("objects/" + file1.methodToGetSha1());
+        File file_junit1 = new File("objects/" + sha1);
         assertTrue("Blob file to add not found", file_junit1.exists());
 
+        File index = new File("index");
+
         // Read file contents
-        String indexFileContents = MyUtilityClass.readAFileToAString("objects/" + file1.methodToGetSha1());
+        String indexFileContents = "junit_example_file_data.txt : cbaedccfded0c768295aae27c8e5b3a0025ef340";
         assertEquals("File contents of Blob don't match file contents pre-blob creation", indexFileContents,
-                file1.getContents());
+                Files.readString(Path.of(index.getPath())));
     }
 }
