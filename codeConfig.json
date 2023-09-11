@@ -1,0 +1,92 @@
+[
+    {
+        "className": "Index",
+        "methodConfigs": [
+            {
+                "methodName": "initialize",
+                "parameters": [],
+                "values": []
+            },
+            {
+                "methodName": "reader",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "TestFile"
+                ]
+            },
+            {
+                "methodName": "addBlob",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "TestFile"
+                ]
+            },
+            {
+                "methodName": "removeBlob",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "TestFile"
+                ]
+            }
+        ]
+    },
+    {
+        "className": "Blob",
+        "constructorConfigs": [
+            {
+                "parameterTypes": [
+                    "String"
+                ],
+                "values": [
+                    "TestFile"
+                ]
+            }
+        ],
+        "methodConfigs": [
+            {
+                "methodName": "reader",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "TestFile"
+                ]
+            },
+            {
+                "methodName": "encryptPassword",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "TestFile"
+                ]
+            },{
+                "methodName": "byteToHex",
+                "parameters": [
+                    "byte[]"
+                ],
+                "values": [
+                    ""
+                ]
+            },{
+                "methodName": "writeToObjects",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "in"
+                ]
+            },{
+                "methodName": "getSha1",
+                "parameters": [],
+                "values": []
+            }
+        ]
+    }
+]
