@@ -1,3 +1,5 @@
+package src;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,10 +21,10 @@ import java.util.Formatter;
 public class Blob {
     private String sha1;
 
-    public Blob (String TestFile) throws IOException
-    {
-        writeToObjects (TestFile);
+    public Blob(String TestFile) throws IOException {
+        writeToObjects(TestFile);
     }
+
     public String reader(String TestFile) throws IOException {
         StringBuilder output = new StringBuilder();
         BufferedReader breader = new BufferedReader(new FileReader(TestFile));
@@ -35,7 +37,7 @@ public class Blob {
     }
 
     public String encryptPassword(String TestFile) throws IOException {
-        String passwordString = reader (TestFile);
+        String passwordString = reader(TestFile);
         String sha1 = "";
         try {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
@@ -60,18 +62,17 @@ public class Blob {
         return result;
     }
 
-    public void writeToObjects(String in) throws IOException
-    {
+    public void writeToObjects(String in) throws IOException {
         String hash = encryptPassword(in);
         sha1 = hash;
         String directoryPath = "objects";
         String fileName = hash;
         String filePath = directoryPath + File.separator + fileName;
-    
+
         // Ensure the directory exists
         Path directoryPathing = Paths.get(directoryPath);
         Files.createDirectories(directoryPathing);
-    
+
         // Create and write to the file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             bw.write(reader(in));
@@ -80,10 +81,8 @@ public class Blob {
         }
     }
 
-    public String getSha1 ()
-    {
+    public String getSha1() {
         return sha1;
     }
-    
 
 }
