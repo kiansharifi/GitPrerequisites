@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import src.Index;
+import src.Tree;
 import src.Blob;
 import src.Utils;
 
@@ -23,7 +24,6 @@ public class UnitTester {
         Utils.writeStringToFile("junit_example_file_data.txt", "test file contents");
         Utils.deleteFile("index");
         Utils.deleteDirectory("objects");
-
     }
 
     @AfterAll
@@ -46,6 +46,29 @@ public class UnitTester {
 
         assertTrue(file.exists());
         assertTrue(Files.exists(path));
+    }
+
+    @Test
+    @DisplayName("[15] Test if adding a tree")
+    void testCreateTree() throws Exception {
+        String sha1 = "3edd7b21427d8b1dc28a9633c7dcb922492af6e0";
+        String fileContents = "tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b\nblob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt";
+        try {
+            Tree tree = new Tree();
+            tree.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
+            tree.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
+            tree.save();
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+
+        // Check blob exists in the objects folder
+        File file_junit1 = new File("objects/" + sha1);
+        assertTrue("Tree file to add not found", file_junit1.exists());
+
+        // Read file contents
+        assertEquals("File contents of Blob don't match file contents pre-blob creation", fileContents,
+                Files.readString(Path.of((file_junit1.getPath()))));
     }
 
     @Test
