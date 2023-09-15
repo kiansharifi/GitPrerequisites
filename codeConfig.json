@@ -88,5 +88,48 @@
                 "values": []
             }
         ]
+    },
+    {
+        "className": "Tree",
+        "methodConfigs": [
+            {
+                "methodName": "getFileContents",
+                "parameters": [],
+                "values": []
+            },
+            {
+                "methodName": "add",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "contents"
+                ]
+            },{
+                "methodName": "byteToHex",
+                "parameters": [
+                    "byte[]"
+                ],
+                "values": [
+                    ""
+                ]
+            },{
+                "methodName": "remove",
+                "parameters": [
+                    "String"
+                ],
+                "values": [
+                    "entry"
+                ]
+            },{
+                "methodName": "getSha1",
+                "parameters": [],
+                "values": []
+            },{
+                "methodName": "save",
+                "parameters": [],
+                "values": []
+            }
+        ]
     }
 ]
