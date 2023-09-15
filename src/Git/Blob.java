@@ -1,4 +1,4 @@
-package src;
+package src.Git;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

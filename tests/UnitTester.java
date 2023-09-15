@@ -12,10 +12,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import src.Index;
-import src.Tree;
-import src.Blob;
-import src.Utils;
+import src.Git.Blob;
+import src.Git.Index;
+import src.Git.Tree;
+import src.Git.Utils;
 
 public class UnitTester {
 

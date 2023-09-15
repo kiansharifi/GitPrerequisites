@@ -1,4 +1,4 @@
-package src;
+package src.Git;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-import src.Blob;
+import src.Git.Blob;
 
 public class Index {
     public static void initialize() throws IOException {
