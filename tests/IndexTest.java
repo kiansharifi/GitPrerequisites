@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ public class IndexTest {
         TestUtils.deleteDirectory("objects");
     }
 
+    // Tests adding a blob, checks index and objects folder
     @Test
     void testAddBlob() throws IOException {
         Index.initialize();
@@ -58,6 +60,7 @@ public class IndexTest {
                 Files.readString(Path.of(path.toString())));
     }
 
+    // Checks index and objects folder after initializing
     @Test
     void testInitialize() throws IOException {
         Index.initialize();
@@ -69,6 +72,7 @@ public class IndexTest {
         assertTrue("Objects folder does not exist", Files.exists(path));
     }
 
+    // Tests file reader
     @Test
     void testReader() throws IOException {
         String file_contents = Index.reader("test_file");
@@ -76,8 +80,28 @@ public class IndexTest {
         assertEquals("Reader does not return contents of file", file_contents, "test file contents");
     }
 
+    // Tests removing a blob
     @Test
-    void testRemoveBlob() {
+    void testRemoveBlob() throws IOException {
+        Index.initialize();
+        setupRemove();
 
+        Index.removeBlob("test_file");
+
+        File index = new File("index");
+        String indexFileContents = "";
+        assertEquals("File contents of index not updated", indexFileContents,
+                Files.readString(Path.of(index.getPath())));
+
+    }
+
+    void setupRemove() throws IOException {
+        FileWriter fw = new FileWriter("objects/cbaedccfded0c768295aae27c8e5b3a0025ef340");
+        fw.write("test file contents");
+        fw.close();
+
+        FileWriter fw2 = new FileWriter("index");
+        fw2.write("test_file : cbaedccfded0c768295aae27c8e5b3a0025ef340");
+        fw2.close();
     }
 }
