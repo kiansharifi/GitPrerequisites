@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class Utils {
+public class TestUtils {
     public static void writeStringToFile(String path, String contents) throws IOException {
         FileWriter fw = new FileWriter(path, false);
         fw.write(contents);

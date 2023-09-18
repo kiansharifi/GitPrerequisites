@@ -15,22 +15,22 @@ import org.junit.jupiter.api.Test;
 import src.Git.Blob;
 import src.Git.Index;
 import src.Git.Tree;
-import src.Git.Utils;
+import src.Git.TestUtils;
 
 public class UnitTester {
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
-        Utils.writeStringToFile("junit_example_file_data.txt", "test file contents");
-        Utils.deleteFile("index");
-        Utils.deleteDirectory("objects");
+        TestUtils.writeStringToFile("junit_example_file_data.txt", "test file contents");
+        TestUtils.deleteFile("index");
+        TestUtils.deleteDirectory("objects");
     }
 
     @AfterAll
     static void tearDownAfterClass() throws Exception {
-        Utils.deleteFile("junit_example_file_data.txt");
-        Utils.deleteFile("index");
-        Utils.deleteDirectory("objects");
+        TestUtils.deleteFile("junit_example_file_data.txt");
+        TestUtils.deleteFile("index");
+        TestUtils.deleteDirectory("objects");
     }
 
     @Test
