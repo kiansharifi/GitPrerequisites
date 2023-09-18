@@ -3,6 +3,9 @@ package tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,9 +30,14 @@ public class TreeTest {
         TestUtils.deleteDirectory("objects");
     }
 
+    // Tests adding a tree
     @Test
     void testAdd() {
+        Tree tree = new Tree();
+        tree.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
 
+        assertEquals("Incorrect file contents", "tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b",
+                tree.getFileContents());
     }
 
     // Tests byte array to hex string conversion
@@ -67,11 +75,27 @@ public class TreeTest {
 
     @Test
     void testRemove() {
+        Tree tree = new Tree();
+        tree.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
+        tree.remove("bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
 
+        assertEquals("Incorrect file contents", "", tree.getFileContents());
     }
 
     @Test
-    void testSave() {
+    void testSave() throws IOException {
+        Index.initialize();
 
+        Tree tree = new Tree();
+        tree.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
+        tree.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
+
+        tree.save();
+
+        Path path = Paths.get("objects/" + tree.getSha1(tree.getFileContents().stripTrailing()));
+
+        assertEquals("Incorrect file contents",
+                "tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b\nblob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt",
+                Files.readString(Path.of(path.toString())));
     }
 }
