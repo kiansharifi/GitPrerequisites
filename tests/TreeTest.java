@@ -36,7 +36,7 @@ public class TreeTest {
         Tree tree = new Tree();
         tree.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
 
-        assertEquals("Incorrect file contents", "blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt",
+        assertEquals("Incorrect file contents", "blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt\n",
                 tree.getFileContents());
     }
 
@@ -60,7 +60,7 @@ public class TreeTest {
         tree.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
         tree.remove("bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
 
-        assertEquals("Incorrect file contents", "blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt",
+        assertEquals("Incorrect file contents", "blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt\n",
                 tree.getFileContents());
     }
 
