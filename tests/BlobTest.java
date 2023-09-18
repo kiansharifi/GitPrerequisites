@@ -32,6 +32,7 @@ public class BlobTest {
         TestUtils.deleteDirectory("objects");
     }
 
+    // Tests byte array to hex string conversion
     @Test
     void testByteToHex() throws IOException {
         Blob blob = new Blob("test_file");
@@ -43,6 +44,7 @@ public class BlobTest {
         assertEquals("Incorrect behavior for non-empty array", "00010203", blob.byteToHex(nonEmpty));
     }
 
+    // Tests SHA1 encryption
     @Test
     void testEncryptPassword() throws IOException {
         // SHA1 of "test file contents" is cbaedccfded0c768295aae27c8e5b3a0025ef340
@@ -52,6 +54,7 @@ public class BlobTest {
                 "cbaedccfded0c768295aae27c8e5b3a0025ef340");
     }
 
+    // Tests SHA1 getter
     @Test
     void testGetSha1() throws IOException {
         Blob blob = new Blob("test_file");
@@ -62,6 +65,7 @@ public class BlobTest {
                 "cbaedccfded0c768295aae27c8e5b3a0025ef340");
     }
 
+    // Tests file reader
     @Test
     void testReader() throws IOException {
         Blob blob = new Blob("test_file");
@@ -70,27 +74,19 @@ public class BlobTest {
         assertEquals("Reader does not return contents of file", file_contents, "test file contents");
     }
 
+    // Tests file writer to objects folder
     @Test
     void testWriteToObjects() throws IOException {
-        String sha1 = "";
+        Index.initialize();
 
-        Index.addBlob("test_file");
         Blob blob = new Blob("test_file");
-        sha1 = blob.getSha1();
+        blob.writeToObjects("test_file");
 
-        // Check blob exists in the objects folder
-        Path path = Paths.get("objects/" + sha1);
-        assertTrue("Blob file to add not found", Files.exists(path));
-
-        File index = new File("index");
-
-        // Read file contents
-        String indexFileContents = "test_file : " + sha1;
-        assertEquals("File contents of index not updated", indexFileContents,
-                Files.readString(Path.of(index.getPath())));
+        Path path = Paths.get("objects/" + blob.getSha1());
+        assertTrue("Blob file not added to objects", Files.exists(path));
 
         String originalFileContents = blob.reader("test_file");
-        assertEquals("File contents of Blob don't match file contents pre-blob creation", originalFileContents,
+        assertEquals("File contents are changed", originalFileContents,
                 Files.readString(Path.of(path.toString())));
     }
 }
