@@ -13,6 +13,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import src.Git.Blob;
+import src.Git.Index;
+import src.Git.TestUtils;
 
 public class BlobTest {
     @BeforeAll
