@@ -104,6 +104,7 @@ public class TreeTest {
                 Files.readString(Path.of(path.toString())));
     }
 
+    //tests addDirectory with basic test
     @Test
     void addDirectoryBasicTest() throws IOException, NoSuchAlgorithmException {
         Tree tree = new Tree();
@@ -125,6 +126,7 @@ public class TreeTest {
         assertFalse(sha1.isEmpty());
     }
 
+    //tests addDirectory with advanced test
     @Test
     void addDirectoryAdvancedTest() throws IOException, NoSuchAlgorithmException {
         Tree tree = new Tree();
