@@ -1,6 +1,10 @@
 package src.Git;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -79,4 +83,36 @@ public class Tree {
         return result;
     }
 
+    public void addDirectory(String directoryPath) throws IOException, NoSuchAlgorithmException {
+        File directory = new File(directoryPath);
+
+        if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
+            throw new IllegalArgumentException("Invalid directory path: " + directoryPath);
+        }
+
+        for (File file : directory.listFiles()) {
+            if (file.isFile()) {
+                String content = reader(file);
+                String sha1 = getSha1(content);
+                add("blob : " + sha1 + " : " + file.getName());
+            } else if (file.isDirectory()) {
+                Tree childTree = new Tree();
+                childTree.addDirectory(file.getAbsolutePath());
+                childTree.save();
+                String sha1 = childTree.getSha1(childTree.getFileContents());
+                add("tree : " + sha1 + " : " + file.getName());
+            }
+        }
+    }
+
+    public String reader(File file) throws IOException {
+        StringBuilder output = new StringBuilder();
+        BufferedReader breader = new BufferedReader(new FileReader(file));
+        while (breader.ready()) {
+            String s = breader.readLine();
+            output.append(s);
+        }
+        breader.close();
+        return output.toString();
+    }
 }

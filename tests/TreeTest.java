@@ -1,11 +1,16 @@
 package tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -97,5 +102,59 @@ public class TreeTest {
         assertEquals("Incorrect file contents",
                 "tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b\nblob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt",
                 Files.readString(Path.of(path.toString())));
+    }
+
+    @Test
+    void addDirectoryBasicTest() throws IOException, NoSuchAlgorithmException {
+        Tree tree = new Tree();
+        Path tempDirectory = Files.createTempDirectory("test1");
+        tempDirectory.toFile().deleteOnExit();
+
+        for (int i = 0; i < 3; i++) {
+            File file = new File(tempDirectory.toFile(), "file" + i + ".txt");
+            FileWriter fw = new FileWriter(file);
+            fw.write("content" + i);
+            fw.close();
+            file.deleteOnExit();
+        }
+
+        tree.addDirectory(tempDirectory.toString());
+        tree.save();
+        String sha1 = tree.getSha1(tree.getFileContents());
+        assertNotNull(sha1);
+        assertFalse(sha1.isEmpty());
+    }
+
+    @Test
+    void addDirectoryAdvancedTest() throws IOException, NoSuchAlgorithmException {
+        Tree tree = new Tree();
+        Path tempDirectory = Files.createTempDirectory("advancedTest");
+        tempDirectory.toFile().deleteOnExit();
+
+        for (int i = 0; i < 3; i++) {
+            File file = new File(tempDirectory.toFile(), "file" + i + ".txt");
+            FileWriter fw = new FileWriter(file);
+            fw.write("content" + i);
+            fw.close();
+            file.deleteOnExit();
+        }
+
+        for (int i = 1; i <= 2; i++) {
+            Path folder = Files.createDirectory(tempDirectory.resolve("folder" + i));
+            folder.toFile().deleteOnExit();
+            if (i == 1) {
+                File fileInFolder = new File(folder.toFile(), "fileInFolder.txt");
+                FileWriter fw = new FileWriter(fileInFolder);
+                fw.write("contentInFolder");
+                fw.close();
+                fileInFolder.deleteOnExit();
+            }
+        }
+
+        tree.addDirectory(tempDirectory.toString());
+        tree.save();
+        String sha1 = tree.getSha1(tree.getFileContents());
+        assertNotNull(sha1);
+        assertFalse(sha1.isEmpty());
     }
 }
