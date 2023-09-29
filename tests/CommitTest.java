@@ -23,18 +23,31 @@ public class CommitTest {
     static Commit commit;
 
     @BeforeAll
-    static void setUpBeforeClass() throws Exception {
-        commit = new Commit("Chris Weng", "Test commit");
-        String objectPath = "./objects/";
-        Path oP = Paths.get(objectPath); // creates Path
-        if (!Files.exists(oP)) // creates file if directory doesnt exist
-            Files.createDirectories(oP); // creates Path
+    void setUpBeforeClass() throws Exception {
+        File f = new File("index");
+        f.createNewFile();
+        File d = new File("objects");
+        d.mkdir();
     }
 
     @AfterAll
     static void tearDownAfterClass() throws Exception {
         TestUtils.deleteFile("index");
         TestUtils.deleteDirectory("objects");
+    }
+
+    @Test
+    @DisplayName("TestCreateCommit")
+    public void testCreateCommit() throws Exception {
+        File f = new File("index");
+        f.createNewFile();
+        File d = new File("objects");
+        d.mkdir();
+        commit = new Commit("Chris Weng", "Test commit"); //PROBLEM: COMMIT IS NULL. NEED TO FIX IT
+        String objectPath = "./objects/";
+        Path oP = Paths.get(objectPath); // creates Path
+        if (!Files.exists(oP)) // creates file if directory doesnt exist
+            Files.createDirectories(oP); // creates Path
     }
 
     @Test
@@ -50,7 +63,7 @@ public class CommitTest {
     @DisplayName("Test write method")
     public void testWrite() throws Exception {
         commit.write();
-        File ref = new File(commit.getFileName());
+        File ref = new File(commit.getSHA());
         assertTrue(ref.exists());
 
         String contents = "\n + \n + \n + Chris Weng + \n" + commit.getDate() + " \n + Test commit";

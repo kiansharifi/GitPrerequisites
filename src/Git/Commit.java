@@ -10,57 +10,61 @@ import java.util.Date;
 public class Commit {
     String author;
     String summary;
-    String parentSHA = "";
+    String parentSHA;
     String date;
-    String name;
+    String commitSHA;
 
-    Tree origin = new Tree();
     String treeSHA;
 
     File commit;
     String commitPath;
 
-    public Commit(String author, String summary) throws IOException {
+    public Commit(String author, String summary) throws Exception {
         this.author = author;
         this.summary = summary;
-        treeSHA = origin.getSha1(""); 
+        this.parentSHA = "";
         createDate();
+        this.treeSHA = createTree();
+        write();
     }
 
-    public Commit(String SHA, String author, String summary) {
+    public Commit(String SHA, String author, String summary) throws Exception {
         this.author = author;
         this.summary = summary;
         this.parentSHA = SHA;
         createDate();
+        this.treeSHA = createTree();
+        write();
     }
 
-    private void initializeCommit() throws Exception {
-        if (!commit.exists()) {
-            commit.createNewFile();
-        }
+    private void saveCommitToObjectsFolder(String commitContents) throws Exception {
+        TestUtils.writeStringToFile("./objects/" + commitSHA, commitContents);
+    }
 
-        commitPath = "./objects/";
+    public String getSHA() {
+        return commitSHA;
     }
 
     public void write() throws Exception {
-        initializeCommit();
         StringBuilder sb = new StringBuilder("");
 
         sb.append(treeSHA + "\n");
         sb.append(parentSHA + "\n");
-        File index = new File("index"); //origin.getIndex();
-        String extSHA = this.createHash(this.readFile(index));
-        sb.append(extSHA + "\n");
+        // Skip 3rd line for sha
         sb.append(author + "\n");
         sb.append(date + "\n");
         sb.append(summary);
-        initializeCommit();
-        name = createHash(sb.toString());
-        commit = new File(name, commitPath);
+        commitSHA = TestUtils.getSha1(sb.toString());
 
-        FileWriter fw = new FileWriter(commit, true);
-        fw.append(sb.toString());
-        fw.close();
+        StringBuilder sbWithBlank3rdLine= new StringBuilder("");
+        sbWithBlank3rdLine.append(treeSHA + "\n");
+        sbWithBlank3rdLine.append(parentSHA + "\n");
+        sbWithBlank3rdLine.append("\n");
+        sbWithBlank3rdLine.append(author + "\n");
+        sbWithBlank3rdLine.append(date + "\n");
+        sbWithBlank3rdLine.append(summary);
+        saveCommitToObjectsFolder(sbWithBlank3rdLine.toString());
+
     }
 
     public String readFile(File fileName) throws IOException {
@@ -73,9 +77,10 @@ public class Commit {
         return string.toString();
     }
 
-    public String createHash(String fileContents) throws Exception {
+    public String createTree() throws Exception {
         Tree t = new Tree();
-        return t.getSha1(fileContents);
+        t.save();
+        return t.getSha();
 
     }
 
@@ -87,9 +92,5 @@ public class Commit {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date today = new Date();
         date = formatter.format(today);
-    }
-
-    public String getFileName() {
-        return name;
     }
 }

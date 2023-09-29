@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class Tree {
 
     String fileContents = "";
+    private String sha = "";
 
     public String getFileContents() {
         return fileContents;
@@ -51,10 +52,12 @@ public class Tree {
 
     public void save() throws IOException {
         fileContents = fileContents.stripTrailing();
-        File file = new File("objects/" + getSha1(fileContents));
-        FileWriter fw = new FileWriter(file);
-        fw.write(fileContents);
-        fw.close();
+        sha = getSha1(fileContents);
+        TestUtils.writeStringToFile("objects/" + getSha1(fileContents), fileContents);
+    }
+
+    public String getSha() {
+        return sha;
     }
 
     public String getSha1(String input) throws IOException {
