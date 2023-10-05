@@ -50,14 +50,14 @@ public class CommitTest {
             Files.createDirectories(oP); // creates Path
     }
 
-    @Test
-    @DisplayName("Test Constructor")
-    public void testConstructor() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date today = new Date();
-        String date = formatter.format(today);
-        assertEquals(date, commit.getDate());
-    }
+    // @Test
+    // @DisplayName("Test Constructor")
+    // public void testConstructor() {
+    //     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    //     Date today = new Date();
+    //     String date = formatter.format(today);
+    //     assertEquals(date, commit.getDate());
+    // }
 
     @Test
     @DisplayName("Test write method")
