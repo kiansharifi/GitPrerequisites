@@ -93,7 +93,13 @@ public class Tree {
             throw new IllegalArgumentException("Invalid directory path: " + directoryPath);
         }
 
-        for (File file : directory.listFiles()) {
+        File[] directoryContents = directory.listFiles();
+
+        if (directoryContents == null || directoryContents.length == 0) { //for empty directory test
+            return;
+        }
+
+        for (File file : directoryContents) {
             if (file.isFile()) {
                 String content = reader(file);
                 String sha1 = getSha1(content);
@@ -103,7 +109,10 @@ public class Tree {
                 childTree.addDirectory(file.getAbsolutePath());
                 childTree.save();
                 String sha1 = childTree.getSha1(childTree.getFileContents());
-                add("tree : " + sha1 + " : " + file.getName());
+                if (!childTree.getFileContents().isEmpty()) {
+                    //dont add empty directories
+                    add("tree : " + sha1 + " : " + file.getName());
+                }
             }
         }
     }
