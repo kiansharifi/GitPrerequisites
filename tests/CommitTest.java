@@ -59,6 +59,7 @@ public class CommitTest {
     //     assertEquals(date, commit.getDate());
     // }
 
+    
     @Test
     @DisplayName("Test write method")
     public void testWrite() throws Exception {
@@ -70,4 +71,5 @@ public class CommitTest {
         assertEquals(contents, commit.readFile(ref));
 
     }
+    
 }

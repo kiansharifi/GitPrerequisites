@@ -89,39 +89,33 @@ public class Tree {
     public String addDirectory(String directoryPath) throws Exception {
         File directory = new File(directoryPath);
 
-        if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
-            throw new Exception("Invalid directory path");
-        }
-
-        File[] directoryThings = directory.listFiles();
-
-        if (directoryThings == null || directoryThings.length == 0) { // for empty directory test
-            return "";
-        }
-
-        for (File file : directoryThings) {
-            if (file.isFile()) {
-                Blob blob = new Blob(file.getPath());
-                String sha1 = blob.getSha1();
-                add("blob : " + sha1 + " : " + file.getName());
-            } else if (file.isDirectory()) {
-                Tree childTree = new Tree();
-                childTree.addDirectory(file.getPath());
-                childTree.save();
-                if (!childTree.getFileContents().isEmpty()) {
-                    add("tree : " + childTree.getSha() + " : " + file.getName());
-                }
-            }
-        }
-
-        save();
-        return getSha();
+    if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
+        throw new Exception("Invalid directory path");
     }
 
-    // public static void main(String[] args) throws Exception {
-    //     Tree tree = new Tree();
-    //     tree.addDirectory("mark");
-    // }
+    File[] directoryThings = directory.listFiles();
+
+    for (File file : directoryThings) {
+        if (file.isFile()) {
+            Blob blob = new Blob(file.getPath());
+            String sha1 = blob.getSha1();
+            add("blob : " + sha1 + " : " + file.getName());
+        } else if (file.isDirectory()) {
+            Tree childTree = new Tree();
+            childTree.addDirectory(file.getPath());
+            childTree.save();
+            add("tree : " + childTree.getSha() + " : " + file.getName());
+        }
+    }
+
+    save();
+    return getSha();
+}
+
+    public static void main(String[] args) throws Exception {
+        Tree tree = new Tree();
+        tree.addDirectory("mark");
+    }
 
     public String reader(File file) throws IOException {
         StringBuilder output = new StringBuilder();

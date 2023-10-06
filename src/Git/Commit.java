@@ -18,7 +18,7 @@ public class Commit {
 
     File commit;
     String commitPath;
-
+    
     public Commit(String author, String summary) throws Exception {
         this.author = author;
         this.summary = summary;
@@ -81,8 +81,8 @@ public class Commit {
         Tree t = new Tree();
         t.save();
         return t.getSha();
-
     }
+
 
     public String getDate() {
         return date;
