@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 
 public class Index {
     public static void initialize() throws IOException {
@@ -71,6 +72,13 @@ public class Index {
         writer.close();
         reader.close();
         tempFile.renameTo(inputFile);
+    }
+  
+    public static void addDirectory (String pathOfDirectory) throws NoSuchAlgorithmException, IOException
+    {
+        Tree tree = new Tree ();
+        //tree.addDirectory (pathOfDirectory);
+        //need to do step 2 of the 2nd step
     }
 
 }

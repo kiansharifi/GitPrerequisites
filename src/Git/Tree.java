@@ -86,35 +86,41 @@ public class Tree {
         return result;
     }
 
-    public void addDirectory(String directoryPath) throws IOException, NoSuchAlgorithmException {
+    public String addDirectory(String directoryPath) throws Exception {
         File directory = new File(directoryPath);
 
         if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
-            throw new IllegalArgumentException("Invalid directory path: " + directoryPath);
+            throw new Exception("Invalid directory path");
         }
 
-        File[] directoryContents = directory.listFiles();
+        File[] directoryThings = directory.listFiles();
 
-        if (directoryContents == null || directoryContents.length == 0) { //for empty directory test
-            return;
+        if (directoryThings == null || directoryThings.length == 0) { // for empty directory test
+            return "";
         }
 
-        for (File file : directoryContents) {
+        for (File file : directoryThings) {
             if (file.isFile()) {
-                String content = reader(file);
-                String sha1 = getSha1(content);
+                Blob blob = new Blob(file.getPath());
+                String sha1 = blob.getSha1();
                 add("blob : " + sha1 + " : " + file.getName());
             } else if (file.isDirectory()) {
                 Tree childTree = new Tree();
-                childTree.addDirectory(file.getAbsolutePath());
+                childTree.addDirectory(file.getPath());
                 childTree.save();
-                String sha1 = childTree.getSha1(childTree.getFileContents());
                 if (!childTree.getFileContents().isEmpty()) {
-                    //dont add empty directories
-                    add("tree : " + sha1 + " : " + file.getName());
+                    add("tree : " + childTree.getSha() + " : " + file.getName());
                 }
             }
         }
+
+        save();
+        return getSha();
+    }
+
+    public static void main(String[] args) throws Exception {
+        Tree tree = new Tree();
+        tree.addDirectory("mark");
     }
 
     public String reader(File file) throws IOException {

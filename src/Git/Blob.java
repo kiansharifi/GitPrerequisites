@@ -24,9 +24,9 @@ public class Blob {
     public String reader(String TestFile) throws IOException {
         StringBuilder output = new StringBuilder();
         BufferedReader breader = new BufferedReader(new FileReader(TestFile));
-        while (breader.ready()) {
-            String s = breader.readLine();
-            output.append(s);
+        String s;
+        while ((s = breader.readLine()) != null) {
+            output.append(s).append("\n");
         }
         breader.close();
         return output.toString();
