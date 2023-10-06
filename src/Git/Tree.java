@@ -118,10 +118,10 @@ public class Tree {
         return getSha();
     }
 
-    public static void main(String[] args) throws Exception {
-        Tree tree = new Tree();
-        tree.addDirectory("mark");
-    }
+    // public static void main(String[] args) throws Exception {
+    //     Tree tree = new Tree();
+    //     tree.addDirectory("mark");
+    // }
 
     public String reader(File file) throws IOException {
         StringBuilder output = new StringBuilder();

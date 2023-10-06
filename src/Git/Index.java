@@ -73,12 +73,30 @@ public class Index {
         reader.close();
         tempFile.renameTo(inputFile);
     }
-  
-    public static void addDirectory (String pathOfDirectory) throws NoSuchAlgorithmException, IOException
-    {
-        Tree tree = new Tree ();
-        //tree.addDirectory (pathOfDirectory);
-        //need to do step 2 of the 2nd step
+
+    public static void addDirectory(String pathOfDirectory) throws Exception {
+        initialize();
+        File f = new File(pathOfDirectory);
+        Tree tree = new Tree();
+
+        tree.addDirectory(pathOfDirectory);
+        tree.save(); // do I need to save
+
+        FileWriter writer = new FileWriter("index", true);
+        String entry = "tree : " + tree.getSha() + " : " + f.getName();
+        if (!reader("index").contains(entry)) {
+            if (!reader("index").isEmpty()) {
+                writer.write("\n");
+            }
+            writer.write(entry);
+
+        }
+        writer.close();
+    }
+
+    public static void main(String[] args) throws Exception {
+        Index i = new Index();
+        i.addDirectory("mark");
     }
 
 }

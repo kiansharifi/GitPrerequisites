@@ -106,7 +106,7 @@ public class TreeTest {
 
     //tests addDirectory with basic test
     @Test
-    void addDirectoryBasicTest() throws IOException, NoSuchAlgorithmException {
+    void addDirectoryBasicTest() throws Exception {
         Tree tree = new Tree();
         Path tempDirectory = Files.createTempDirectory("test1");
         tempDirectory.toFile().deleteOnExit();
@@ -128,7 +128,7 @@ public class TreeTest {
 
     //tests addDirectory with advanced test
     @Test
-    void addDirectoryAdvancedTest() throws IOException, NoSuchAlgorithmException {
+    void addDirectoryAdvancedTest() throws Exception {
         Tree tree = new Tree();
         Path tempDirectory = Files.createTempDirectory("advancedTest");
         tempDirectory.toFile().deleteOnExit();
