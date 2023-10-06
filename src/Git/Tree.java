@@ -92,7 +92,7 @@ public class Tree {
     if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
         throw new Exception("Invalid directory path");
     }
-
+    //Shou
     File[] directoryThings = directory.listFiles();
 
     for (File file : directoryThings) {
