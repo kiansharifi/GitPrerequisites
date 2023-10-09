@@ -26,6 +26,21 @@ public class Commit {
         createDate();
         this.treeSHA = createTree();
         write();
+
+        Tree tree = new Tree ();
+        FileReader fw = new FileReader ("index");
+        BufferedReader br = new BufferedReader (fw);
+        try {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                tree.add(line);
+            }
+        }
+        catch (IOException e) {
+            System.out.println ("Error reading the file: " + e.getMessage());
+        }
+
     }
 
     public Commit(String SHA, String author, String summary) throws Exception {
@@ -35,6 +50,20 @@ public class Commit {
         createDate();
         this.treeSHA = createTree();
         write();
+
+        Tree tree = new Tree ();
+        FileReader fw = new FileReader ("index");
+        BufferedReader br = new BufferedReader (fw);
+        try {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                tree.add(line);
+            }
+        }
+        catch (IOException e) {
+            System.out.println ("Error reading the file: " + e.getMessage());
+        }
     }
 
     private void saveCommitToObjectsFolder(String commitContents) throws Exception {

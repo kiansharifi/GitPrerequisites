@@ -27,7 +27,7 @@ public class Tree {
         String shaOfFile = parts[1];
         String optionalFileName = parts.length > 2 ? parts[2] : "";
 
-        if (!fileContents.contains(shaOfFile)
+        if (!fileContents.contains("blob : " + shaOfFile)
                 && (optionalFileName.isEmpty() || (!fileContents.contains(optionalFileName)))) {
             fileContents += contents + "\n";
         }
