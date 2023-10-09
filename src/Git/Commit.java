@@ -14,11 +14,11 @@ import java.util.List;
 public class Commit {
     String author;
     String summary;
-    String parentSHA;
+    public String parentSHA;
     String date;
     String commitSHA;
 
-    String treeSHA;
+    public String treeSHA;
 
     File commit;
     String commitPath;
@@ -167,13 +167,13 @@ public class Commit {
     }
 
     private void updateThirdLineOfFile(File file, String newLineContent) throws IOException {
-        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+        List<String> lines = Files.readAllLines(file.toPath());
 
         if (lines.size() < 3) {
-            throw new IOException("The file " + file.getName() + " has less than three lines.");
+            throw new IOException("File has less than three lines");
         }
 
         lines.set(2, newLineContent); //2 bc 0 index
-        Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
+        Files.write(file.toPath(), lines);
     }
 }
