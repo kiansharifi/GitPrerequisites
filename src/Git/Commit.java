@@ -14,11 +14,11 @@ import java.util.List;
 public class Commit {
     String author;
     String summary;
-    public String parentSHA;
+    String parentSHA; //make getter
     String date;
     String commitSHA;
 
-    public String treeSHA;
+    String treeSHA; //make getter
 
     File commit;
     String commitPath;
@@ -28,44 +28,41 @@ public class Commit {
         this.summary = summary;
         this.parentSHA = "";
         createDate();
-        this.treeSHA = createTree();
-        write();
+        
+        System.out.println("Content of Index Before Reading into Tree: " + Index.reader("index"));
 
         Tree tree = new Tree();
+        try (FileReader fw = new FileReader("index");
+             BufferedReader br = new BufferedReader(fw)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                tree.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading from index: " + e.getMessage());
+        }
 
         if (!this.parentSHA.isEmpty()) {
             tree.add("tree : " + this.parentSHA);
         }
 
-        try {
-            FileReader fw = new FileReader("index");
-            BufferedReader br = new BufferedReader(fw);
-            String line;
-            while ((line = br.readLine()) != null) {
-                tree.add(line);
-            }
-            br.close();
-            fw.close();
+        tree.save();
+        this.treeSHA = tree.getSha();
 
-            try (FileWriter fwIndexClear = new FileWriter("index")) {
-                fwIndexClear.write("");
-            }
-
-            if (!this.parentSHA.isEmpty()) {
-                tree.add("tree : " + this.parentSHA);
-            }
-
-            if (!this.parentSHA.isEmpty()) {
-                File previousCommitFile = new File("./objects/" + this.parentSHA);
-                if (previousCommitFile.exists()) {
-                    updateThirdLineOfFile(previousCommitFile, this.commitSHA);
-                } else {
-                    System.out.println("Previous commit file not found");
-                }
-            }
-
+        try (FileWriter fwIndexClear = new FileWriter("index")) {
+            fwIndexClear.write("");
         } catch (IOException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
+            System.out.println("Error clearing the index");
+        }
+        write();
+
+        if (!this.parentSHA.isEmpty()) {
+            File previousCommitFile = new File("./objects/" + this.parentSHA);
+            if (previousCommitFile.exists()) {
+                updateThirdLineOfFile(previousCommitFile, this.commitSHA);
+            } else {
+                System.out.println("Previous commit file not found");
+            }
         }
     }
 
@@ -76,37 +73,40 @@ public class Commit {
         createDate();
         this.treeSHA = createTree();
         write();
+        System.out.println("Content of Index Before Reading into Tree: " + Index.reader("index"));
 
         Tree tree = new Tree();
-        FileReader fw = new FileReader("index");
-        BufferedReader br = new BufferedReader(fw);
-        try {
+        try (FileReader fw = new FileReader("index");
+             BufferedReader br = new BufferedReader(fw)) {
             String line;
             while ((line = br.readLine()) != null) {
                 tree.add(line);
             }
-
-            if (!this.parentSHA.isEmpty()) {
-                tree.add("tree : " + this.parentSHA);
-            }
-
-            try (FileWriter fwIndexClear = new FileWriter("index")) {
-                fwIndexClear.write("");
-            }
-
         } catch (IOException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-        }
-    }
-
-    public static String getTreeHashFromCommit(String commitSHA) throws IOException {
-        File commitFile = new File("./objects/" + commitSHA);
-        if (!commitFile.exists() || !commitFile.isFile()) {
-            throw new IOException("Commit file not found for SHA: " + commitSHA);
+            System.out.println("Error reading from index: " + e.getMessage());
         }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(commitFile))) {
-            return br.readLine().trim();
+        if (!this.parentSHA.isEmpty()) {
+            tree.add("tree : " + this.parentSHA);
+        }
+
+        tree.save();
+        this.treeSHA = tree.getSha();
+
+        try (FileWriter fwIndexClear = new FileWriter("index")) {
+            fwIndexClear.write("");
+        } catch (IOException e) {
+            System.out.println("Error clearing the index");
+        }
+        write();
+
+        if (!this.parentSHA.isEmpty()) {
+            File previousCommitFile = new File("./objects/" + this.parentSHA);
+            if (previousCommitFile.exists()) {
+                updateThirdLineOfFile(previousCommitFile, this.commitSHA);
+            } else {
+                System.out.println("Previous commit file not found");
+            }
         }
     }
 
@@ -116,6 +116,14 @@ public class Commit {
 
     public String getSHA() {
         return commitSHA;
+    }
+    
+    public String getParentSHA() {
+        return parentSHA;
+    }
+
+    public String getTreeSHA() {
+        return treeSHA;
     }
 
     public void write() throws Exception {
@@ -173,7 +181,7 @@ public class Commit {
             throw new IOException("File has less than three lines");
         }
 
-        lines.set(2, newLineContent); //2 bc 0 index
+        lines.set(2, newLineContent); // 2 bc 0 index
         Files.write(file.toPath(), lines);
     }
 }

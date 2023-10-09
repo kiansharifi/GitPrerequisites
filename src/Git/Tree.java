@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
@@ -54,6 +56,11 @@ public class Tree {
         fileContents = fileContents.stripTrailing();
         sha = getSha1(fileContents);
         TestUtils.writeStringToFile("objects/" + getSha1(fileContents), fileContents);
+
+        String path = "objects/" + getSha1(fileContents); //for debugging
+String savedContent = new String(Files.readAllBytes(Paths.get(path)));
+System.out.println("Tree Content After Saving: " + savedContent);
+
     }
 
     public String getSha() {

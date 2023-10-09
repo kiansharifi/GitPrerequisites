@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
@@ -58,6 +59,10 @@ public class TestUtils {
         String result = formatter.toString();
         formatter.close();
         return result;
+    }
+
+    public static String readFile(String path) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(path)));
     }
 
 }
