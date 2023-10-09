@@ -1,4 +1,5 @@
 package src.Git;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -18,7 +19,7 @@ public class Commit {
 
     File commit;
     String commitPath;
-    
+
     public Commit(String author, String summary) throws Exception {
         this.author = author;
         this.summary = summary;
@@ -27,20 +28,26 @@ public class Commit {
         this.treeSHA = createTree();
         write();
 
-        Tree tree = new Tree ();
-        FileReader fw = new FileReader ("index");
-        BufferedReader br = new BufferedReader (fw);
+        Tree tree = new Tree();
+        FileReader fw = new FileReader("index");
+        BufferedReader br = new BufferedReader(fw);
         try {
             String line;
-            while ((line = br.readLine()) != null)
-            {
+            while ((line = br.readLine()) != null) {
                 tree.add(line);
             }
-        }
-        catch (IOException e) {
-            System.out.println ("Error reading the file: " + e.getMessage());
-        }
 
+            if (!this.parentSHA.isEmpty()) {
+                tree.add("tree : " + this.parentSHA);
+            }
+
+            try (FileWriter fwIndexClear = new FileWriter("index")) {
+                fwIndexClear.write("");
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
     }
 
     public Commit(String SHA, String author, String summary) throws Exception {
@@ -51,18 +58,36 @@ public class Commit {
         this.treeSHA = createTree();
         write();
 
-        Tree tree = new Tree ();
-        FileReader fw = new FileReader ("index");
-        BufferedReader br = new BufferedReader (fw);
+        Tree tree = new Tree();
+        FileReader fw = new FileReader("index");
+        BufferedReader br = new BufferedReader(fw);
         try {
             String line;
-            while ((line = br.readLine()) != null)
-            {
+            while ((line = br.readLine()) != null) {
                 tree.add(line);
             }
+
+            if (!this.parentSHA.isEmpty()) {
+                tree.add("tree : " + this.parentSHA);
+            }
+
+            try (FileWriter fwIndexClear = new FileWriter("index")) {
+                fwIndexClear.write("");
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
         }
-        catch (IOException e) {
-            System.out.println ("Error reading the file: " + e.getMessage());
+    }
+
+    public static String getTreeHashFromCommit (String commitSHA) throws IOException {
+        File commitFile = new File("./objects/" + commitSHA);
+        if (!commitFile.exists() || !commitFile.isFile()) {
+            throw new IOException("Commit file not found for SHA: " + commitSHA);
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(commitFile))) {
+            return br.readLine().trim();
         }
     }
 
@@ -85,7 +110,7 @@ public class Commit {
         sb.append(summary);
         commitSHA = TestUtils.getSha1(sb.toString());
 
-        StringBuilder sbWithBlank3rdLine= new StringBuilder("");
+        StringBuilder sbWithBlank3rdLine = new StringBuilder("");
         sbWithBlank3rdLine.append(treeSHA + "\n");
         sbWithBlank3rdLine.append(parentSHA + "\n");
         sbWithBlank3rdLine.append("\n");
@@ -111,7 +136,6 @@ public class Commit {
         t.save();
         return t.getSha();
     }
-
 
     public String getDate() {
         return date;
