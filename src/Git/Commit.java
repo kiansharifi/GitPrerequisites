@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Commit {
     String author;
@@ -29,20 +32,36 @@ public class Commit {
         write();
 
         Tree tree = new Tree();
-        FileReader fw = new FileReader("index");
-        BufferedReader br = new BufferedReader(fw);
+
+        if (!this.parentSHA.isEmpty()) {
+            tree.add("tree : " + this.parentSHA);
+        }
+
         try {
+            FileReader fw = new FileReader("index");
+            BufferedReader br = new BufferedReader(fw);
             String line;
             while ((line = br.readLine()) != null) {
                 tree.add(line);
+            }
+            br.close();
+            fw.close();
+
+            try (FileWriter fwIndexClear = new FileWriter("index")) {
+                fwIndexClear.write("");
             }
 
             if (!this.parentSHA.isEmpty()) {
                 tree.add("tree : " + this.parentSHA);
             }
 
-            try (FileWriter fwIndexClear = new FileWriter("index")) {
-                fwIndexClear.write("");
+            if (!this.parentSHA.isEmpty()) {
+                File previousCommitFile = new File("./objects/" + this.parentSHA);
+                if (previousCommitFile.exists()) {
+                    updateThirdLineOfFile(previousCommitFile, this.commitSHA);
+                } else {
+                    System.out.println("Previous commit file not found");
+                }
             }
 
         } catch (IOException e) {
@@ -80,7 +99,7 @@ public class Commit {
         }
     }
 
-    public static String getTreeHashFromCommit (String commitSHA) throws IOException {
+    public static String getTreeHashFromCommit(String commitSHA) throws IOException {
         File commitFile = new File("./objects/" + commitSHA);
         if (!commitFile.exists() || !commitFile.isFile()) {
             throw new IOException("Commit file not found for SHA: " + commitSHA);
@@ -145,5 +164,16 @@ public class Commit {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date today = new Date();
         date = formatter.format(today);
+    }
+
+    private void updateThirdLineOfFile(File file, String newLineContent) throws IOException {
+        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+
+        if (lines.size() < 3) {
+            throw new IOException("The file " + file.getName() + " has less than three lines.");
+        }
+
+        lines.set(2, newLineContent); //2 bc 0 index
+        Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
     }
 }
