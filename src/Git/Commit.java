@@ -168,6 +168,14 @@ public class Commit {
         return date;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
     private void createDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date today = new Date();

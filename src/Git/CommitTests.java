@@ -2,14 +2,19 @@ package src.Git;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-class TestCommits {
+class CommitTests {
+    static Commit commit;
 
     @BeforeEach
     void setup() throws IOException {
@@ -30,6 +35,25 @@ class TestCommits {
         TestUtils.deleteFile("testFile2Commit4.txt");
         TestUtils.deleteDirectory("testDirCommit3");
 
+        File f = new File("index");
+        f.createNewFile();
+        File d = new File("objects");
+        d.mkdir();
+
+    }
+
+    @Test
+    @DisplayName("TestCreateCommit")
+    public void testCreateCommit() throws Exception {
+        File f = new File("index");
+        f.createNewFile();
+        File d = new File("objects");
+        d.mkdir();
+        commit = new Commit("Chris Weng", "Test commit");
+        String objectPath = "./objects/";
+        Path oP = Paths.get(objectPath); // creates Path
+        if (!Files.exists(oP)) // creates file if directory doesnt exist
+            Files.createDirectories(oP); // creates Path
     }
 
     @Test
@@ -43,12 +67,12 @@ class TestCommits {
         Commit commit = new Commit("Author", "Test commit");
 
         String treeContent = TestUtils.readFile("./objects/" + commit.getTreeSHA());
-        assertTrue(treeContent.contains("testFile1.txt"), "Tree does not contain the first file.");
-        assertTrue(treeContent.contains("testFile2.txt"), "Tree does not contain the second file.");
+        assertTrue(treeContent.contains("testFile1.txt"), "Tree does not contain first file");
+        assertTrue(treeContent.contains("testFile2.txt"), "Tree does not contain second file");
 
-        assertEquals("", commit.parentSHA, "Parent SHA1 is not empty for the first commit.");
+        assertEquals("", commit.parentSHA, "Parent SHA1 not empty for the first commit");
         String commitContent = TestUtils.readFile("./objects/" + commit.getSHA());
-        assertTrue(commitContent.split("\n")[2].isEmpty(), "Next SHA1 is not empty for the first commit.");
+        assertTrue(commitContent.split("\n")[2].isEmpty(), "Next SHA1 is not empty for the first commit");
 
     }
 
@@ -61,12 +85,11 @@ class TestCommits {
         Index.addBlob("testFile2.txt");
         Commit firstCommit = new Commit("Author", "Test commit 1");
         String firstTreeContent = TestUtils.readFile("./objects/" + firstCommit.getTreeSHA());
-        assertTrue(firstTreeContent.contains("testFile1.txt"), "Tree of first commit does not contain the first file.");
-        assertTrue(firstTreeContent.contains("testFile2.txt"),
-                "Tree of first commit does not contain the second file.");
-        assertEquals("", firstCommit.getParentSHA(), "Parent SHA1 is not empty for the first commit.");
+        assertTrue(firstTreeContent.contains("testFile1.txt"), "Tree of first commit doesnt contain the first file");
+        assertTrue(firstTreeContent.contains("testFile2.txt"), "Tree of first commit doesnt contain the second file");
+        assertEquals("", firstCommit.getParentSHA(), "Parent SHA1 is not empty for the first commit");
         String firstCommitContent = TestUtils.readFile("./objects/" + firstCommit.getSHA());
-        assertTrue(firstCommitContent.split("\n")[2].isEmpty(), "Next SHA1 is not empty for the first commit.");
+        assertTrue(firstCommitContent.split("\n")[2].isEmpty(), "Next SHA1 is not empty for the first commit");
 
         // Commit 2
         TestUtils.writeStringToFile("testFile3.txt", "Content of test file 3");
@@ -81,9 +104,9 @@ class TestCommits {
         assertTrue(secondTreeContent.contains("testFile3.txt"), "Tree of second commit doesnt contain the third file");
         assertTrue(secondTreeContent.contains("testFile4.txt"), "Tree of second commit doesnt contain the fourth file");
         assertTrue(secondTreeContent.contains("testDir"), "Tree of second commit doesn't contain the directory");
-        assertEquals(firstCommit.getSHA(), secondCommit.getParentSHA(), "Parent SHA1 of the second commit is not the SHA1 of the first commit");
+        assertEquals(firstCommit.getSHA(), secondCommit.getParentSHA(), "Parent sha1 of the second commit is not the sha1 of the first commit");
         String secondCommitContent = TestUtils.readFile("./objects/" + secondCommit.getSHA());
-        assertTrue(secondCommitContent.split("\n")[2].isEmpty(), "Next SHA1 is not empty for the second commit");
+        assertTrue(secondCommitContent.split("\n")[2].isEmpty(), "Next sha1 value is not empty for the second commit");
     }
 
     @Test
@@ -138,7 +161,7 @@ class TestCommits {
         assertTrue(treeContent3.contains("testFile2Commit3.txt"));
         assertTrue(treeContent3.contains("testDirCommit3"));
         Blob blobFileInDir = new Blob("testDirCommit3/fileInDir.txt");
-        System.out.println("Expected SHA1 for blobFileInDir: " + blobFileInDir.getSha1());
+        System.out.println("Expected sha1 for blobFileInDir: " + blobFileInDir.getSha1()); //debugging
         System.out.println("Content of tree for commit 3: " + treeContent3);
         // assertTrue(treeContent3.contains("blob : " + blobFileInDir.getSha1() + " : fileInDir.txt"));
         assertEquals(commit2.getSHA(), commit3.getParentSHA());
