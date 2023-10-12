@@ -113,8 +113,8 @@ class TestCommits {
         TestUtils.writeStringToFile("testDirCommit3/fileInDir.txt", "Content of a file inside a directory for Commit 3");
         Index.addDirectory("testDirCommit3");
         System.out.println("Content of Index Before Third Commit: " + Index.reader("index")); // debug
-        String treeContentForTestDir = TestUtils.readFile("./objects/" + "a5d68b616f487b4646db708cd6bcd1a890084ff8"); // debug
-        System.out.println("Content of tree for testDirCommit3: " + treeContentForTestDir);
+        // String treeContentForTestDir = TestUtils.readFile("./objects/" + "a5d68b616f487b4646db708cd6bcd1a890084ff8"); // debug
+        // System.out.println("Content of tree for testDirCommit3: " + treeContentForTestDir);
         Commit commit3 = new Commit(commit2.getSHA(), "Author", "Test commit 3");
         String treeContent3 = TestUtils.readFile("./objects/" + commit3.getTreeSHA());
 
