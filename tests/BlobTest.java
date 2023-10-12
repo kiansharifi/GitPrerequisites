@@ -49,9 +49,9 @@ public class BlobTest {
     void testEncryptPassword() throws IOException {
         // SHA1 of "test file contents" is cbaedccfded0c768295aae27c8e5b3a0025ef340
         Blob blob = new Blob("test_file");
-
-        assertEquals("SHA1 hash of file not correct", blob.encryptPassword("test_file"),
-                "cbaedccfded0c768295aae27c8e5b3a0025ef340");
+        System.out.println (blob.encryptPassword("test_file")); //debug
+        System.out.println (blob.getSha1()); //debug
+        assertEquals("SHA1 hash of file not correct", blob.encryptPassword("test_file"), "cbaedccfded0c768295aae27c8e5b3a0025ef340");
     }
 
     // Tests SHA1 getter
@@ -61,8 +61,7 @@ public class BlobTest {
 
         blob.encryptPassword("test_file");
 
-        assertEquals("getSha1() doesn't return last hash of file", blob.getSha1(),
-                "cbaedccfded0c768295aae27c8e5b3a0025ef340");
+        assertEquals("getSha1() doesn't return last hash of file", blob.getSha1(), "cbaedccfded0c768295aae27c8e5b3a0025ef340");
     }
 
     // Tests file reader

@@ -13,6 +13,9 @@ import java.util.Formatter;
 public class TestUtils {
     public static void writeStringToFile(String path, String contents) throws IOException {
         FileWriter fw = new FileWriter(path, false);
+        // File file = new File(path);
+        // file.getParentFile().mkdirs();
+        // FileWriter fw = new FileWriter(file, false);
         fw.write(contents);
         fw.close();
     }

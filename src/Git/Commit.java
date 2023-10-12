@@ -14,11 +14,11 @@ import java.util.List;
 public class Commit {
     String author;
     String summary;
-    String parentSHA; //make getter
+    String parentSHA; // make getter
     String date;
     String commitSHA;
 
-    String treeSHA; //make getter
+    String treeSHA; // make getter
 
     File commit;
     String commitPath;
@@ -28,12 +28,12 @@ public class Commit {
         this.summary = summary;
         this.parentSHA = "";
         createDate();
-        
+
         System.out.println("Content of Index Before Reading into Tree: " + Index.reader("index"));
 
         Tree tree = new Tree();
         try (FileReader fw = new FileReader("index");
-             BufferedReader br = new BufferedReader(fw)) {
+                BufferedReader br = new BufferedReader(fw)) {
             String line;
             while ((line = br.readLine()) != null) {
                 tree.add(line);
@@ -77,7 +77,7 @@ public class Commit {
 
         Tree tree = new Tree();
         try (FileReader fw = new FileReader("index");
-             BufferedReader br = new BufferedReader(fw)) {
+                BufferedReader br = new BufferedReader(fw)) {
             String line;
             while ((line = br.readLine()) != null) {
                 tree.add(line);
@@ -117,7 +117,7 @@ public class Commit {
     public String getSHA() {
         return commitSHA;
     }
-    
+
     public String getParentSHA() {
         return parentSHA;
     }
@@ -183,5 +183,12 @@ public class Commit {
 
         lines.set(2, newLineContent); // 2 bc 0 index
         Files.write(file.toPath(), lines);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Index.initialize();
+        Index.addBlob("TestFile");
+        Commit c = new Commit("", "mark", "this is first commit");
+        c.write();
     }
 }

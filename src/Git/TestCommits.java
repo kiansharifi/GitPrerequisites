@@ -81,8 +81,7 @@ class TestCommits {
         assertTrue(secondTreeContent.contains("testFile3.txt"), "Tree of second commit doesnt contain the third file");
         assertTrue(secondTreeContent.contains("testFile4.txt"), "Tree of second commit doesnt contain the fourth file");
         assertTrue(secondTreeContent.contains("testDir"), "Tree of second commit doesn't contain the directory");
-        assertEquals(firstCommit.getSHA(), secondCommit.getParentSHA(),
-                "Parent SHA1 of the second commit is not the SHA1 of the first commit");
+        assertEquals(firstCommit.getSHA(), secondCommit.getParentSHA(), "Parent SHA1 of the second commit is not the SHA1 of the first commit");
         String secondCommitContent = TestUtils.readFile("./objects/" + secondCommit.getSHA());
         assertTrue(secondCommitContent.split("\n")[2].isEmpty(), "Next SHA1 is not empty for the second commit");
     }

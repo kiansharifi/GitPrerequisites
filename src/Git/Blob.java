@@ -26,7 +26,11 @@ public class Blob {
         BufferedReader breader = new BufferedReader(new FileReader(TestFile));
         String s;
         while ((s = breader.readLine()) != null) {
-            output.append(s).append("\n");
+            if (output.length() > 0)
+            {
+                output.append ("\n");
+            }
+            output.append (s);
         }
         breader.close();
         return output.toString();

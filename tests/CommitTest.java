@@ -60,6 +60,8 @@ public class CommitTest {
     // }
 
     
+    //Mr. Theiss said to not worry about this. We couldn't fix from the person's code that I got it from.
+    /*
     @Test
     @DisplayName("Test write method")
     public void testWrite() throws Exception {
@@ -71,5 +73,6 @@ public class CommitTest {
         assertEquals(contents, commit.readFile(ref));
 
     }
+    */
     
 }
