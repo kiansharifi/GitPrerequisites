@@ -27,13 +27,20 @@ public class Tree {
     public void add(String contents) {
         String[] parts = contents.split(" : ");
         String shaOfFile = parts[1];
-        String optionalFileName = parts.length > 2 ? parts[2] : "";
-
+        String optionalFileName;
+    
+        if (parts.length > 2) {
+            optionalFileName = parts[2];
+        } else {
+            optionalFileName = "";
+        }
+    
         if (!fileContents.contains("blob : " + shaOfFile)
                 && (optionalFileName.isEmpty() || (!fileContents.contains(optionalFileName)))) {
             fileContents += contents + "\n";
         }
     }
+    
 
     public void remove(String entry) {
         String newFileContents = "";
@@ -57,9 +64,9 @@ public class Tree {
         sha = getSha1(fileContents);
         TestUtils.writeStringToFile("objects/" + getSha1(fileContents), fileContents);
 
-        String path = "objects/" + getSha1(fileContents); //for debugging
-String savedContent = new String(Files.readAllBytes(Paths.get(path)));
-System.out.println("Tree Content After Saving: " + savedContent);
+        String path = "objects/" + getSha1(fileContents); // for debugging
+        String savedContent = new String(Files.readAllBytes(Paths.get(path)));
+        System.out.println("Tree Content After Saving: " + savedContent);
 
     }
 
@@ -96,28 +103,28 @@ System.out.println("Tree Content After Saving: " + savedContent);
     public String addDirectory(String directoryPath) throws Exception {
         File directory = new File(directoryPath);
 
-    if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
-        throw new Exception("Invalid directory path");
-    }
-    //Shou
-    File[] directoryThings = directory.listFiles();
-
-    for (File file : directoryThings) {
-        if (file.isFile()) {
-            Blob blob = new Blob(file.getPath());
-            String sha1 = blob.getSha1();
-            add("blob : " + sha1 + " : " + file.getName());
-        } else if (file.isDirectory()) {
-            Tree childTree = new Tree();
-            childTree.addDirectory(file.getPath());
-            childTree.save();
-            add("tree : " + childTree.getSha() + " : " + file.getName());
+        if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
+            throw new Exception("Invalid directory path");
         }
-    }
+        // Shou
+        File[] directoryThings = directory.listFiles();
 
-    save();
-    return getSha();
-}
+        for (File file : directoryThings) {
+            if (file.isFile()) {
+                Blob blob = new Blob(file.getPath());
+                String sha1 = blob.getSha1();
+                add("blob : " + sha1 + " : " + file.getName());
+            } else if (file.isDirectory()) {
+                Tree childTree = new Tree();
+                childTree.addDirectory(file.getPath());
+                childTree.save();
+                add("tree : " + childTree.getSha() + " : " + file.getName());
+            }
+        }
+
+        save();
+        return getSha();
+    }
 
     public static void main(String[] args) throws Exception {
         Tree tree = new Tree();
