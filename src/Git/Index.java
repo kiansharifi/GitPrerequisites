@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
@@ -97,6 +98,18 @@ public class Index {
     public static void main(String[] args) throws Exception {
         Index i = new Index();
         i.addDirectory("mark");
+    }
+
+    public static void markFileAsDeleted(String filename) throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) { // true for append mode
+            pw.println("*deleted* " + filename);
+        }
+    }
+
+    public static void markFileAsEdited(String filename) throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) { // true for append mode
+            pw.println("*edited* " + filename);
+        }
     }
 
 }

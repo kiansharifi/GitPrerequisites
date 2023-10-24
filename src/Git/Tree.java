@@ -7,8 +7,12 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,6 +23,7 @@ public class Tree {
 
     String fileContents = "";
     private String sha = "";
+    private static String foundTree = "";
 
     public String getFileContents() {
         return fileContents;
@@ -28,19 +33,18 @@ public class Tree {
         String[] parts = contents.split(" : ");
         String shaOfFile = parts[1];
         String optionalFileName;
-    
+
         if (parts.length > 2) {
             optionalFileName = parts[2];
         } else {
             optionalFileName = "";
         }
-    
+
         if (!fileContents.contains("blob : " + shaOfFile)
                 && (optionalFileName.isEmpty() || (!fileContents.contains(optionalFileName)))) {
             fileContents += contents + "\n";
         }
     }
-    
 
     public void remove(String entry) {
         String newFileContents = "";
@@ -140,5 +144,88 @@ public class Tree {
         }
         breader.close();
         return output.toString();
+    }
+
+    public static String findDeletedFile(String deletedFileName, String treeSha) throws Exception {
+        FileReader reader = new FileReader("objects/" + treeSha);
+        try (Scanner scan = new Scanner(reader)) {
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                if (line.split(" : ")[0].equals("tree")) {
+                    String a = findDeletedFile(deletedFileName, line.split(" : ")[1]);
+                    if (!a.isEmpty())
+                        return a;
+                } else if (line.contains(deletedFileName)) {
+                    foundTree = treeSha;
+                }
+            }
+        }
+        reader.close();
+        return foundTree;
+    }
+
+    public static void markFileAsDeleted(String filename) throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) {
+            pw.println("*deleted* " + filename);
+            pw.close ();
+        }
+    }
+
+    public static void markFileAsEdited(String filename) throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) {
+            pw.println("*edited* " + filename);
+            pw.close ();
+        }
+    }
+
+    public static String deleteFile(String deletedFileName) throws Exception {
+        markFileAsDeleted(deletedFileName);
+
+        FileReader frHead = new FileReader("HEAD");
+        Scanner frScan = new Scanner(frHead);
+        String latestCommit = frScan.nextLine();
+        frScan.close();
+        frHead.close();
+
+        FileReader latestTree = new FileReader("objects/" + latestCommit);
+        Scanner latestScan = new Scanner(latestTree);
+        String latestTreeSha = latestScan.nextLine();
+        latestScan.close();
+        latestTree.close();
+
+        return findDeletedFile(deletedFileName, latestTreeSha);
+    }
+
+    public static void replaceSHA1InTree(String treeSha, String originalSHA1, String newSHA1) throws IOException {
+        Path treePath = Paths.get("objects/" + treeSha);
+        Charset charset = StandardCharsets.UTF_8;
+
+        String content = new String(Files.readAllBytes(treePath), charset);
+        content = content.replace(originalSHA1, newSHA1);
+        Files.write(treePath, content.getBytes(charset));
+    }
+
+    public static String editFile(String editedFileName, String newSHA1) throws Exception {
+        markFileAsEdited(editedFileName);
+    
+        FileReader frHead = new FileReader("HEAD");
+        Scanner frScan = new Scanner(frHead);
+        String latestCommit = frScan.nextLine();
+        frScan.close();
+        frHead.close();
+    
+        FileReader latestTree = new FileReader("objects/" + latestCommit);
+        Scanner latestScan = new Scanner(latestTree);
+        String latestTreeSha = latestScan.nextLine();
+        latestScan.close();
+        latestTree.close();
+        String treeWithOriginalFile = findDeletedFile(editedFileName, latestTreeSha);
+    
+        Tree tree = new Tree();
+        String originalSHA1 = tree.getSha1(editedFileName);
+    
+        replaceSHA1InTree(treeWithOriginalFile, originalSHA1, newSHA1);
+    
+        return treeWithOriginalFile;
     }
 }
