@@ -171,13 +171,6 @@ public class Tree {
         }
     }
 
-    public static void markFileAsEdited(String filename) throws IOException {
-        try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) {
-            pw.println("*edited* " + filename);
-            pw.close ();
-        }
-    }
-
     public static String deleteFile(String deletedFileName) throws Exception {
         markFileAsDeleted(deletedFileName);
 
@@ -203,6 +196,13 @@ public class Tree {
         String content = new String(Files.readAllBytes(treePath), charset);
         content = content.replace(originalSHA1, newSHA1);
         Files.write(treePath, content.getBytes(charset));
+    }
+
+    public static void markFileAsEdited(String filename) throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) {
+            pw.println("*edited* " + filename);
+            pw.close ();
+        }
     }
 
     public static String editFile(String editedFileName, String newSHA1) throws Exception {
