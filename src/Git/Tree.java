@@ -237,7 +237,7 @@ public class Tree {
         }
         return "";
     }
-    
+
     private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException
     {
         byte [] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
@@ -278,5 +278,4 @@ public class Tree {
         String treeSHA = getTreeSHAFromCommit(commitSHA);
         checkoutTree(treeSHA, "");
     }
-
 }
