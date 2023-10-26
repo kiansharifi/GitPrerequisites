@@ -237,9 +237,10 @@ public class Tree {
         }
         return "";
     }
-
-    private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException {
-        byte[] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
+    
+    private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException
+    {
+        byte [] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
         Files.write(Paths.get(currentPath + File.separator + name), blobContent);
     }
 
