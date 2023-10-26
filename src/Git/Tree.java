@@ -241,6 +241,6 @@ public class Tree {
     private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException
     {
         byte [] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
-        Files.write(Paths.get(File.separator + name), blobContent);
+        Files.write(Paths.get(currentPath + File.separator + name), blobContent);
     }
 }
