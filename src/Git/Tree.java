@@ -238,9 +238,8 @@ public class Tree {
         return "";
     }
 
-    private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException
-    {
-        byte [] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
+    private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException {
+        byte[] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
         Files.write(Paths.get(currentPath + File.separator + name), blobContent);
     }
 
@@ -255,23 +254,21 @@ public class Tree {
             if (parts.length > 2) {
                 name = parts[2];
             }
-            
+
             if (type.equals("blob")) {
                 checkoutBlob(sha, name, currentPath);
-            }
-            else if (type.equals("tree")) {
+            } else if (type.equals("tree")) {
                 String newPath = currentPath + File.separator + name;
                 File newDir = new File(newPath);
                 newDir.mkdirs();
-                checkoutTree(sha, newPath); //recursive
+                checkoutTree(sha, newPath); // recursive
             }
         }
     }
 
     public void checkout(String commitSHA) throws IOException {
         File commitFile = new File("objects/" + commitSHA);
-        if (!commitFile.exists())
-        {
+        if (!commitFile.exists()) {
             System.out.println("commit doesn't exist");
             return;
         }

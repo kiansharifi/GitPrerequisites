@@ -104,7 +104,8 @@ class CommitTests {
         assertTrue(secondTreeContent.contains("testFile3.txt"), "Tree of second commit doesnt contain the third file");
         assertTrue(secondTreeContent.contains("testFile4.txt"), "Tree of second commit doesnt contain the fourth file");
         assertTrue(secondTreeContent.contains("testDir"), "Tree of second commit doesn't contain the directory");
-        assertEquals(firstCommit.getSHA(), secondCommit.getParentSHA(), "Parent sha1 of the second commit is not the sha1 of the first commit");
+        assertEquals(firstCommit.getSHA(), secondCommit.getParentSHA(),
+                "Parent sha1 of the second commit is not the sha1 of the first commit");
         String secondCommitContent = TestUtils.readFile("./objects/" + secondCommit.getSHA());
         assertTrue(secondCommitContent.split("\n")[2].isEmpty(), "Next sha1 value is not empty for the second commit");
     }
@@ -133,11 +134,14 @@ class CommitTests {
         Index.addBlob("testFile1Commit3.txt");
         Index.addBlob("testFile2Commit3.txt");
         new File("testDirCommit3").mkdirs();
-        TestUtils.writeStringToFile("testDirCommit3/fileInDir.txt", "Content of a file inside a directory for Commit 3");
+        TestUtils.writeStringToFile("testDirCommit3/fileInDir.txt",
+                "Content of a file inside a directory for Commit 3");
         Index.addDirectory("testDirCommit3");
         System.out.println("Content of Index Before Third Commit: " + Index.reader("index")); // debug
-        // String treeContentForTestDir = TestUtils.readFile("./objects/" + "a5d68b616f487b4646db708cd6bcd1a890084ff8"); // debug
-        // System.out.println("Content of tree for testDirCommit3: " + treeContentForTestDir);
+        // String treeContentForTestDir = TestUtils.readFile("./objects/" +
+        // "a5d68b616f487b4646db708cd6bcd1a890084ff8"); // debug
+        // System.out.println("Content of tree for testDirCommit3: " +
+        // treeContentForTestDir);
         Commit commit3 = new Commit(commit2.getSHA(), "kiansharifi", "Test commit 3");
         String treeContent3 = TestUtils.readFile("./objects/" + commit3.getTreeSHA());
 
@@ -161,9 +165,10 @@ class CommitTests {
         assertTrue(treeContent3.contains("testFile2Commit3.txt"));
         assertTrue(treeContent3.contains("testDirCommit3"));
         Blob blobFileInDir = new Blob("testDirCommit3/fileInDir.txt");
-        System.out.println("Expected sha1 for blobFileInDir: " + blobFileInDir.getSha1()); //debugging
+        System.out.println("Expected sha1 for blobFileInDir: " + blobFileInDir.getSha1()); // debugging
         System.out.println("Content of tree for commit 3: " + treeContent3);
-        // assertTrue(treeContent3.contains("blob : " + blobFileInDir.getSha1() + " : fileInDir.txt"));
+        // assertTrue(treeContent3.contains("blob : " + blobFileInDir.getSha1() + " :
+        // fileInDir.txt"));
         assertEquals(commit2.getSHA(), commit3.getParentSHA());
 
         assertTrue(treeContent4.contains("testFile1Commit4.txt"));
