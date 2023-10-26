@@ -167,7 +167,7 @@ public class Tree {
     public static void markFileAsDeleted(String filename) throws IOException {
         try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) {
             pw.println("*deleted* " + filename);
-            pw.close ();
+            pw.close();
         }
     }
 
@@ -201,31 +201,31 @@ public class Tree {
     public static void markFileAsEdited(String filename) throws IOException {
         try (PrintWriter pw = new PrintWriter(new FileWriter("index", true))) {
             pw.println("*edited* " + filename);
-            pw.close ();
+            pw.close();
         }
     }
 
     public static String editFile(String editedFileName, String newSHA1) throws Exception {
         markFileAsEdited(editedFileName);
-    
+
         FileReader frHead = new FileReader("HEAD");
         Scanner frScan = new Scanner(frHead);
         String latestCommit = frScan.nextLine();
         frScan.close();
         frHead.close();
-    
+
         FileReader latestTree = new FileReader("objects/" + latestCommit);
         Scanner latestScan = new Scanner(latestTree);
         String latestTreeSha = latestScan.nextLine();
         latestScan.close();
         latestTree.close();
         String treeWithOriginalFile = findDeletedFile(editedFileName, latestTreeSha);
-    
+
         Tree tree = new Tree();
         String originalSHA1 = tree.getSha1(editedFileName);
-    
+
         replaceSHA1InTree(treeWithOriginalFile, originalSHA1, newSHA1);
-    
+
         return treeWithOriginalFile;
     }
 
@@ -238,9 +238,44 @@ public class Tree {
         return "";
     }
 
-    private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException
-    {
-        byte [] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
+    private void checkoutBlob(String blobSHA, String name, String currentPath) throws IOException {
+        byte[] blobContent = Files.readAllBytes(Paths.get("objects/" + blobSHA));
         Files.write(Paths.get(currentPath + File.separator + name), blobContent);
     }
+
+    private void checkoutTree(String treeSHA, String currentPath) throws IOException {
+        String treeContents = TestUtils.readFile("objects/" + treeSHA);
+        String[] entries = treeContents.split("\n");
+        for (String entry : entries) {
+            String[] parts = entry.split(" : ");
+            String type = parts[0];
+            String sha = parts[1];
+            String name = "";
+            if (parts.length > 2) {
+                name = parts[2];
+            }
+            
+            if (type.equals("blob")) {
+                checkoutBlob(sha, name, currentPath);
+            }
+            else if (type.equals("tree")) {
+                String newPath = currentPath + File.separator + name;
+                File newDir = new File(newPath);
+                newDir.mkdirs();
+                checkoutTree(sha, newPath); //recursive
+            }
+        }
+    }
+
+    public void checkout(String commitSHA) throws IOException {
+        File commitFile = new File("objects/" + commitSHA);
+        if (!commitFile.exists())
+        {
+            System.out.println("commit doesn't exist");
+            return;
+        }
+        String treeSHA = getTreeSHAFromCommit(commitSHA);
+        checkoutTree(treeSHA, "");
+    }
+
 }
