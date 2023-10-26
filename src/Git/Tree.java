@@ -228,4 +228,13 @@ public class Tree {
     
         return treeWithOriginalFile;
     }
+
+    private String getTreeSHAFromCommit(String commitSHA) throws IOException {
+        String commitContents = TestUtils.readFile("objects/" + commitSHA);
+        String[] lines = commitContents.split("\n");
+        if (lines.length > 0) {
+            return lines[0];
+        }
+        return "";
+    }
 }
